@@ -1,6 +1,8 @@
 <template>
     <div>
-    <!-- 栏目列表 -->
+    <!-- 首栏(栏目和搜索框) -->
+    <div class="header">
+        <!-- 栏目列表 -->
         <div class="category_list">
             <el-dropdown v-for="c in categorys" @command="toFiltrate">
                 <el-button type="text">
@@ -13,6 +15,27 @@
             </el-dropdown>
            
         </div>
+        <!-- 搜索框 -->
+        <div class="search">
+            <el-select
+    v-model="value"
+    multiple
+    filterable
+    remote
+    reserve-keyword
+    placeholder="请输入关键词"
+    :remote-method="remoteMethod"
+    :loading="loading">
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select>
+        </div>
+    </div>
+        <br/><br/>
         <!-- 农产品列表 -->
         <div class="product_list"> 
             <div class="product" v-for="product in products" :key="product.id" v-if="product.state=='供货'">
@@ -111,19 +134,13 @@ export default {
         color: #de4037;
         margin-top: 6px;
     }
-    .product-add-cart{
-        display: none;
-        padding: 4px 8px;
-        background: #2d8cf0;
-        color: #fff;
-        font-size: 12px;
-        border-radius: 3px;
-        cursor: pointer;
-        position: absolute;
-        top: 5px;
-        right: 5px;
+    
+    .category_list{
+        float:left;
+        
     }
-    .product-main:hover .product-add-cart{
-        display: inline-block;
+    .search{
+        float:right;
+        
     }
 </style>
