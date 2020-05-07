@@ -16,23 +16,26 @@
            
         </div>
         <!-- 搜索框 -->
-        <div class="search">
-            <el-select
-    v-model="value"
-    multiple
-    filterable
-    remote
-    reserve-keyword
-    placeholder="请输入关键词"
-    :remote-method="remoteMethod"
-    :loading="loading">
-    <el-option
-      v-for="item in options"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value">
-    </el-option>
-  </el-select>
+        <div class="search" >
+            <el-select 
+                v-model="value" 
+                multiple  
+                filterable="true"  
+                remote="true"  
+                reserve-keyword 
+                placeholder="请输入关键词" 
+                
+                :remote-method="searchFor"
+                :loading="loading"
+                
+                >
+                <el-option
+                v-for="item in options"
+                :key="item.id"
+                :label="item.title"
+                :value="item">
+                </el-option>
+            </el-select>
         </div>
     </div>
         <br/><br/>
@@ -64,6 +67,7 @@ export default {
             products:[],
             categorys:[],
             props:{multiple: true ,label:'name',value:'id',emitPath:false},
+            options:[],
         }
    },
 
@@ -76,6 +80,7 @@ export default {
                 request.get('/product/findAllProduct')
         .then(result=>{
             this.products = result.data;
+            this.options = result.data;
         })
        },
        reloadCategory(){
@@ -89,6 +94,12 @@ export default {
           .then(response=>{
             this.products = response.data;
         })
+       },
+       searchFor(value){
+            request.get("/product/findByName?name="+value)
+          .then(response=>{
+            this.products = response.data;
+            })
        }
    }
 }
