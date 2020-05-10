@@ -132,7 +132,7 @@ export const asyncRoutes = [
   //     }
   //   ]
   // },
-  //农产品展示
+  //供应展示
   {
     path: '/Supply',
     component: Layout,
@@ -143,16 +143,22 @@ export const asyncRoutes = [
         name: 'product_list',
         meta: { title: '供应', icon: 'documentation', affix: true }
       }
-      // ,{
-      //   hidden:true,
-      //   path: 'editor',
-      //   component: () => import('@/pages/Product/Editor'),
-      //   name: 'product_editor',
-      //   meta: { title: '编辑农产品', icon: 'documentation', affix: true }
-      // }
     ]
   },
   
+  //求购
+  {
+    path: '/Demand',
+    component: Layout,
+    children: [
+      {
+        path: 'List',
+        component: () => import('@/pages/UserPages/Demand/List'),
+        name: 'demand_list',
+        meta: { title: '求购', icon: 'documentation', affix: true }
+      }
+    ]
+  },
   
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
