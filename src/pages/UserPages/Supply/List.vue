@@ -42,15 +42,18 @@
         <!-- 农产品列表 -->
         <div class="product_list"> 
             <div class="product" v-for="product in products" :key="product.id" v-if="product.state=='供货'">
-                 
-                <router-link :to="'/product/' + product.id"
-                            class="product-main">
+                 <!-- :to="'/product/' + product.id" -->
+                <!-- <router-link @click="toDetail(product)"
+                            class="product-main"> -->
                     <!-- 依次显示商品图片、标题、单价 -->
-                    <img :src="product.media">
-                    <h4>{{product.title}}</h4>
-                    <!-- <h4>销量{{info.sales}}</h4> -->
-                    <div class="product-cost">￥ {{product.price}}</div>
-                </router-link>
+                    <div class="product-main" @click="toDetail(product)">
+                        <img :src="product.media">
+                        <h4>{{product.title}}</h4>
+                        <!-- <h4>销量{{info.sales}}</h4> -->
+                        <div class="product-cost">￥ {{product.price}}</div>    
+                    </div>
+                    
+                <!-- </router-link> -->
                 <div class="product-not-found"
                     v-show="!products.length">暂无相关商品</div>
                 </div>
@@ -100,7 +103,10 @@ export default {
           .then(response=>{
             this.products = response.data;
             })
-       }
+       },
+       toDetail(record){
+          this.$router.push({path:'/Supply/Detail',query:record})
+       },
    }
 }
 </script>

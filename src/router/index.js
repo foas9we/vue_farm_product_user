@@ -142,7 +142,13 @@ export const asyncRoutes = [
         component: () => import('@/pages/UserPages/Supply/List'),
         name: 'product_list',
         meta: { title: '供应', icon: 'documentation', affix: true }
-      }
+      },{
+              hidden:true,
+              path: 'detail',
+              component: () => import('@/pages/UserPages/Supply/Detail'),
+              name: 'product_detail',
+              meta: { title: '农产品详情', icon: 'documentation', affix: true }
+            }
     ]
   },
   
