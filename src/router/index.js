@@ -165,7 +165,19 @@ export const asyncRoutes = [
       }
     ]
   },
-  
+  //我的页面
+  {
+    path: '/Me',
+    component: Layout,
+    children: [
+      {
+        path: 'List',
+        component: () => import('@/pages/UserPages/Me'),
+        name: 'me_list',
+        meta: { title: '我的', icon: 'documentation', affix: true }
+      }
+    ]
+  },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]

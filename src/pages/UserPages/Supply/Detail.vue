@@ -20,9 +20,21 @@
                 {{product.description}}
                 <img :src="product.media">
      </div>
-     <div >
-         <h2>产品评论</h2>
-         {{evaluate}}
+     <h2 class="p-evaluate">产品评论</h2>{{$store.state.count}}
+     <div class="tab-con">
+         
+         <!-- {{evaluate}} -->
+         <div class="comment-item" v-for="e in evaluate" >
+             <div class="comment-column">
+                 <div class="user-info">
+                     <h1>{{e.user.name}}</h1>
+                 </div>
+                <p class="comment-con">{{e.content}}</p>
+                <div class="pic-list"><img :src="e.picture"></div>
+                <div class="date">{{e.date | formatDate}}</div>
+             </div>
+
+         </div>
      </div>
 
      <!-- <el-dialog :title="title" :visible.sync="product_visible">
@@ -53,7 +65,7 @@
                     <el-button size="small" @click="user_visible = false">取 消</el-button>
                     <el-button type="primary" size="small" @click="saveUserHandler">确 定</el-button>
                 </div>
-            </el-dialog> --> -->
+            </el-dialog> --> 
          <!-- 新建用户模态框 -->
 </div>
     
@@ -62,7 +74,10 @@
 </template>
 <script>
 import request from '@/utils/request'
+import {formatDate} from '../../myJS/date'
+import store from '../../../store'
 export default {
+
     data(){
         return{
            product:{} ,
@@ -80,22 +95,41 @@ export default {
         //     { required: true, message: '请选择性别', trigger: 'change' }
         //     ]
         // }
+        user:'',
            
         }
    },
+   filters: {
+    formatDate(time) {
+      var date = new Date(time);
+      return formatDate(date, 'yyyy-MM-dd hh:mm');
+    }
+  },
 
    created(){
       this.product = this.$route.query;
-      this.loadEvaluate(this.product.id);
+      this.loadEvaluate(this.$route.query.id);
+      
     
    },
    methods:{
+     
       loadEvaluate(id){
         request.get('/evaluate/findByProductId?id='+id)
         .then(response=>{
             this.evaluate = response.data;
         })
-      }
+      },
+//       timestampToTime (row, column) {
+//         var date = new Date(row)
+//         var Y = date.getFullYear() + '-'
+//         var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-'
+//         var D = date.getDate() + ' '
+//         var h = date.getHours() + ':'
+//         var m = date.getMinutes() + ':'
+//         var s = date.getSeconds()
+//         return Y + M + D + h + m + s
+// }
    }
 }
 </script>
@@ -151,5 +185,86 @@ export default {
         margin: 32px auto;
         padding: 32px;
         border-bottom: 1px solid #dddee1;
+    }
+
+    .tab-con{
+        padding: 10px 0;
+        padding-top: 10px;
+        padding-right: 0px;
+        padding-bottom: 10px;
+        padding-left: 0px;
+
+        margin-top: 0px;
+        margin-right: 0px;
+        margin-bottom: 0px;
+        margin-left: 0px;
+
+        font: 12px/150% tahoma,arial,Microsoft YaHei,Hiragino Sans GB,"\u5b8b\u4f53",sans-serif;
+        color: #666;
+    }
+
+    .comment-item{
+        padding-top: 15px;
+        padding-right: 15px;
+        padding-bottom: 15px;
+        padding-left: 15px;
+
+        border-bottom-color: rgb(221, 221, 221);
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
+
+        margin-top: 0px;
+        margin-right: 0px;
+        margin-bottom: 0px;
+        margin-left: 0px;
+
+        font: 12px/150% tahoma,arial,Microsoft YaHei,Hiragino Sans GB,"\u5b8b\u4f53",sans-serif;
+        font-style: normal;
+        font-variant-caps: normal;
+        font-weight: normal;
+        font-stretch: normal;
+        font-size: 12px;
+        line-height: 150%;
+        font-family: tahoma, arial, Microsoft YaHei, Hiragino Sans GB, "u5b8bu4f53", sans-serif;
+        font-size-adjust: none;
+        font-kerning: auto;
+        font-optical-sizing: auto;
+        font-variant-alternates: normal;
+        font-variant-east-asian: normal;
+        font-variant-ligatures: normal;
+        font-variant-numeric: normal;
+        font-variant-position: normal;
+        font-language-override: normal;
+        font-feature-settings: normal;
+        font-variation-settings: normal;
+        color: #666;
+    }
+    .comment-item{
+        margin-left: 150px;
+        margin: 0;
+        padding: 0;
+        font: 12px/150% tahoma,arial,Microsoft YaHei,Hiragino Sans GB,"\u5b8b\u4f53",sans-serif;
+        color: #666;
+    }
+    .user-info{
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: hidden;
+    }
+
+    .comment-con{
+            font: 12px/150% tahoma,arial,Microsoft YaHei,Hiragino Sans GB,"\u5b8b\u4f53",sans-serif;
+    
+    }
+    .pic-list{
+        margin: 0;
+        padding: 0;
+        font: 12px/150% tahoma,arial,Microsoft YaHei,Hiragino Sans GB,"\u5b8b\u4f53",sans-serif;
+        color: #666;
+    }
+    .p-evaluate{
+        text-align: center;
     }
 </style>

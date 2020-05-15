@@ -7,7 +7,7 @@
       </pan-thumb>
       <github-corner style="position: absolute; top: 0px; border: 0; right: 0;" />
       <div class="info-container">
-        <span class="display_name">{{ name }}</span>
+        <span class="display_name"><el-button type="text" @click="toEdit()"><h1>{{name}}</h1></el-button></span>
         <span style="font-size:20px;padding-top:20px;display:inline-block;">Editor's Dashboard</span>
       </div>
     </div>
@@ -21,7 +21,7 @@
 import { mapGetters } from 'vuex'
 import PanThumb from '@/components/PanThumb'
 import GithubCorner from '@/components/GithubCorner'
-
+import request from '@/utils/request'
 export default {
   name: 'DashboardEditor',
   components: { PanThumb, GithubCorner },
@@ -36,6 +36,13 @@ export default {
       'avatar',
       'roles'
     ])
+  },
+  methods:{
+    toEdit(){
+       //跳转到编辑个人信息页面
+           this.$router.push({path:'/Me/List'});
+    }
+    
   }
 }
 </script>

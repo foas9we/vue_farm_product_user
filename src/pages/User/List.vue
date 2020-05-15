@@ -92,16 +92,16 @@ export default {
             user_visible:false,
             title: '添加用户',
             rules: {
-            name: [
-            { required: true, message: '请输入用户名', trigger: 'change' }
-            ],
-            password: [
-            { required: true, message: '请输入密码', trigger: 'change' }
-            ],
-            gender: [
-            { required: true, message: '请选择性别', trigger: 'change' }
-            ]
-        }
+                name: [
+                { required: true, message: '请输入用户名', trigger: 'change' }
+                ],
+                password: [
+                { required: true, message: '请输入密码', trigger: 'change' }
+                ],
+                gender: [
+                { required: true, message: '请选择性别', trigger: 'change' }
+                ]
+            }
         }
     },
     created(){
