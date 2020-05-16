@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
+    <el-form ref="loginForm" :model="loginForm"  class="login-form" autocomplete="on" label-position="left">
 
       <div class="title-container">
         <h3 class="title">B2B农产品交易平台</h3>
@@ -86,7 +86,8 @@
 
 <script>
 import SocialSign from './components/SocialSignin'
-
+import request from '@/utils/request'
+import qs from 'qs'
 export default {
   name: 'Login',
   components: { SocialSign },
@@ -98,8 +99,8 @@ export default {
         password:''
       },
       loginRules: {
-        name: [{ required: true, trigger: 'blur'}],
-        password: [{ required: true, trigger: 'blur' }]
+        name: [{ required: false, trigger: 'blur'}],
+        password: [{ required: false, trigger: 'blur' }]
       },
       passwordType: 'password',
       capsTooltip: false,
@@ -147,9 +148,28 @@ export default {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
+    saveUserHandler(){
+      request(
+                {
+                    method:"post",
+                    url:'/baseUser/saveOrUpdate',
+                    data:qs.stringify(this.form),
+                    headers:{
+                        'Content-Type':'application/x-www-form-urlencoded'
+                    }
+                }
+            ).then(result=>{
+        this.$message({
+            message:result.message,
+            type:"success"
+        });
+        this.back();
+      })
+    },
     toAdd(){
            this.form={};
            this.user_visible=true;     
+          // this.$router.push({path:'/Me/List'});
         },
     checkCapslock(e) {
       const { key } = e
@@ -181,25 +201,25 @@ export default {
         }
         return acc
       }, {})
+    },
+    afterQRScan() {
+      if (e.key === 'x-admin-oauth-code') {
+        const code = getQueryObject(e.newValue)
+        const codeMap = {
+          wechat: 'code',
+          tencent: 'code'
+        }
+        const type = codeMap[this.auth_type]
+        const codeName = code[type]
+        if (codeName) {
+          this.$store.dispatch('LoginByThirdparty', codeName).then(() => {
+            this.$router.push({ path: this.redirect || '/' })
+          })
+        } else {
+          alert('第三方登录失败')
+        }
+      }
     }
-    // afterQRScan() {
-    //   if (e.key === 'x-admin-oauth-code') {
-    //     const code = getQueryObject(e.newValue)
-    //     const codeMap = {
-    //       wechat: 'code',
-    //       tencent: 'code'
-    //     }
-    //     const type = codeMap[this.auth_type]
-    //     const codeName = code[type]
-    //     if (codeName) {
-    //       this.$store.dispatch('LoginByThirdparty', codeName).then(() => {
-    //         this.$router.push({ path: this.redirect || '/' })
-    //       })
-    //     } else {
-    //       alert('第三方登录失败')
-    //     }
-    //   }
-    // }
   }
 }
 </script>
