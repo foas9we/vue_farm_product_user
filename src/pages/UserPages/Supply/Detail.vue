@@ -37,36 +37,35 @@
          </div>
      </div>
 
-     <!-- <el-dialog :title="title" :visible.sync="product_visible">
-            <el-form ref="user_form" :model="form" :rules="rules">
-                <el-form-item label="用户名" label-width="80px" prop="name">
+     <el-dialog :title="title" :visible.sync="product_visible">
+         {{form}}{{user}}
+            <el-form ref="product_form" :model="form" :rules="rules">
+                <el-form-item label="收件人" label-width="80px" prop="name">
                 <el-input v-model="form.name" autocomplete="off" />
                 </el-form-item>
-                <el-form-item label="密码" label-width="80px" prop="password">
-                <el-input v-model="form.password" autocomplete="off" />
+                <el-form-item label="联系电话" label-width="80px" prop="phone">
+                <el-input v-model="form.phone" autocomplete="off" />
                 </el-form-item>
-                <el-form-item label="性别" label-width="80px" prop="gender">
-                <el-radio-group v-model="form.gender">
-                    <el-radio label="男">男</el-radio>
-                    <el-radio label="女">女</el-radio>
-                </el-radio-group>
+                <el-form-item label="收件地址" label-width="80px" prop="address">
+                    <el-input v-model="form.address" autocomplete="off" />
                 </el-form-item>
-                <el-form-item label="手机号" label-width="80px">
-                    <el-input v-model="form.phone" autocomplete="off" />
+                <el-form-item label="下单人编号" hidden="true" label-width="80px">
+                    <el-input v-model="form.userId" autocomplete="off" />
                 </el-form-item>
-                <el-form-item label="邮政编码" label-width="80px">
-                    <el-input v-model="form.postcode" autocomplete="off" />
-                </el-form-item>
-                <el-form-item label="出生日期" label-width="80px">
-                <el-date-picker v-model="form.birth" value-format="timestamp" type="date" placeholder="选择日期" />
+                <el-form-item label="下单农产品编号" hidden="true" label-width="80px">
+                    <el-input v-model="form.productId" autocomplete="off" />
                 </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
-                    <el-button size="small" @click="user_visible = false">取 消</el-button>
-                    <el-button type="primary" size="small" @click="saveUserHandler">确 定</el-button>
+                    <el-button size="small" @click="product_visible = false">取 消</el-button>
+                    <el-button type="primary" size="small" @click="toSave">确 定</el-button>
                 </div>
-            </el-dialog> --> 
-         <!-- 新建用户模态框 -->
+
+                <h4 style="text-align:center">产品信息</h4>
+                <h3 style="text-align:center">{{product.title}}</h3>
+                <h3 style="text-align:center">{{product.price}}元</h3>
+            </el-dialog> 
+         <!-- 下单模态框 -->
 </div>
     
    
@@ -76,26 +75,30 @@
 import request from '@/utils/request'
 import {formatDate} from '../../myJS/date'
 import store from '../../../store'
+import { mapGetters } from 'vuex'
+import { get, post, del } from '@/utils/request'
+import qs from 'querystring'
 export default {
 
     data(){
         return{
            product:{} ,
            evaluate:{},
-        //    product_visible:false,
-        //    title:'下单',
-        //    rules: {
-        //     name: [
-        //     { required: true, message: '请输入用户名', trigger: 'change' }
-        //     ],
-        //     password: [
-        //     { required: true, message: '请输入密码', trigger: 'change' }
-        //     ],
-        //     gender: [
-        //     { required: true, message: '请选择性别', trigger: 'change' }
-        //     ]
-        // }
-        user:'',
+           product_visible:false,
+           title:'下单',
+           rules: {
+            name: [
+            { required: true, message: '请输入收货人', trigger: 'change' }
+            ],
+            phone: [
+            { required: true, message: '请输入联系电话', trigger: 'change' }
+            ],
+            address: [
+            { required: true, message: '请输入收货地址 ', trigger: 'change' }
+            ]
+        },
+        form:{},
+        user:{},
            
         }
    },
@@ -105,15 +108,45 @@ export default {
       return formatDate(date, 'yyyy-MM-dd hh:mm');
     }
   },
-
+  computed: {
+    ...mapGetters([
+      'name',
+    ])
+  },
    created(){
       this.product = this.$route.query;
       this.loadEvaluate(this.$route.query.id);
+      this.loadUser(this.name);
       
     
    },
    methods:{
-     
+     loadUser(name){
+         request.get('/baseUser/findByName?name='+name)
+            .then(response=>{
+                this.user = response.data;
+            })
+     },
+     toSave(){
+         this.$refs['product_form'].validate((valid) => {
+                    if (valid) {
+                    const url = '/Order/createOrder'
+                    post(url, this.form)
+                        .then(response => {
+                        this.product_visible = false
+                        this.$message({ message: response.message, type: 'success' })
+                        })
+                    } else {
+                    return false
+                    }
+                })
+     },
+     toBuy(product){
+        
+        this.form.userId = this.user.id;
+        this.form.productId = product.id;
+        this.product_visible=true; 
+     },
       loadEvaluate(id){
         request.get('/evaluate/findByProductId?id='+id)
         .then(response=>{

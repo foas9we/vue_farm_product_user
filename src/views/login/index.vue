@@ -163,6 +163,7 @@ export default {
             message:result.message,
             type:"success"
         });
+        this.user_visible=false;
         this.back();
       })
     },

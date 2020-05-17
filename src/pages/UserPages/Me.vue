@@ -35,6 +35,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import request from '@/utils/request'
+import qs from 'qs'
 export default {
     data(){
         return{
@@ -68,7 +69,22 @@ export default {
             })
       },
       saveOrUpdate(){
-
+          request(
+                {
+                    method:"post",
+                    url:'/baseUser/saveOrUpdate',
+                    data:qs.stringify(this.form),
+                    headers:{
+                        'Content-Type':'application/x-www-form-urlencoded'
+                    }
+                }
+            ).then(result=>{
+        this.$message({
+            message:result.message,
+            type:"success"
+        });
+        this.back();
+      })
       },
       back(){
             this.$router.go(-1);
