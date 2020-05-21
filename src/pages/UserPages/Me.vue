@@ -1,7 +1,6 @@
 <template>
     <div class="myname">
-        {{this.name}}<br/>
-        {{form}}
+       
         <div class="me">
                 <el-form ref="user_form" :model="form" :rules="rules">
                 <el-form-item label="用户名" label-width="80px" prop="name">
@@ -27,19 +26,19 @@
                 </el-form-item>
  
                 <el-form-item>
-                    <el-button type="primary" @click="saveOrUpdate">确认</el-button>
+                    <el-button type="primary" @click="saveOrUpdate">修改</el-button>
                     <el-button type="primary" @click="back">返回</el-button>
                 </el-form-item>
             </el-form>
         </div>
         <br/><br/>
-        <!-- 我的订单----表格形式展示 -->{{this.order}}
+        <!-- 我的订单----表格形式展示 -->
         <div class = "order_list">
         <!-- 表格 -->
             <el-table :data="order"  style="width: 100%">
                 <el-table-column prop="id" label="编号" width="180"></el-table-column>
                 <!-- <el-table-column prop="state" label="订单状态" width="180"></el-table-column> -->
-                <el-table-column prop="date" label="下单时间"> </el-table-column>
+                <el-table-column prop="date"  :formatter="dateFormat" label="下单时间"> </el-table-column>
                 <el-table-column prop="product.title" label="产品"> </el-table-column>
                 <!-- <el-table-column prop="user.name" label="下单人"> </el-table-column> -->
                 <el-table-column prop="name" label="收件人"> </el-table-column>
@@ -60,25 +59,28 @@
 
         <!-- 添加评论模态框 -->
         <el-dialog :title="title" :visible.sync="evaluate_visible">
-         {{form2}}
+       
             <el-form ref="envaluate_form" :model="form2" :rules="rules2">
                 <el-form-item label="评论内容" label-width="80px" prop="content">
                 <el-input type="textarea" v-model="form2.content" autocomplete="off" />
                 </el-form-item>
+                
                 <el-form-item label="图片" label-width="80px" >
                     <el-upload
-                        class="upload-demo"
-                        ref="upload"
-                        action="https://jsonplaceholder.typicode.com/posts/"
-                        :on-preview="handlePreview"
-                        :on-remove="handleRemove"
-                        :file-list="fileList"
-                        :auto-upload="false">
-                        <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-                        <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
-                        <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                            class="avatar-uploader"
+                            :action= "pictureUrl+this.uploadUrl"
+                            :headers="this.myHeaders"
+                             name="test"
+                            :show-file-list="true"
+                            :on-success="handleAvatarSuccess"
+                            limit=1
+                            >
+                        <el-button size="small" type="primary">点击上传</el-button>
+                         <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                     </el-upload>
+                    <h4 hidden="true"> {{form2.picture=this.imageUrl}}</h4>
                 </el-form-item>
+                
                 <el-form-item label="用户id" label-width="80px" hidden="true">
                     <el-input  v-model="form2.userId" autocomplete="off" />
                 </el-form-item>
@@ -101,6 +103,7 @@ import { mapGetters } from 'vuex'
 import request from '@/utils/request'
 import qs from 'qs'
 import { get, del, post } from '@/utils/request'
+import { getToken } from '@/utils/auth'
 
 export default {
     data(){
@@ -126,18 +129,36 @@ export default {
             evaluate_visible:false,
             title:'评论',
             form2:{},
+            imageUrl:'',
+            pictureUrl:'',
+            uploadUrl:'/fileupload/fileUpload',
+            myHeaders: {Authorization: getToken()}
         }
     },
+    
     computed: {
     ...mapGetters([
       'name',
-    ])
+      
+    ]),
+    
   },
   created(){
       this.loadUser(this.name);
       this.loadOrder(this.name);
+      this.pictureUrl = process.env.VUE_APP_BASE_API;
   },
   methods:{
+      handleAvatarSuccess(response, file,fileList) {
+	//res为后端返回的数据
+        this.imageUrl = response.message
+      },
+           
+      dateFormat(row, column){
+        var moment = require('moment');
+        var date = row[column.property];
+        return moment(date).format('YYYY-MM-DD')
+        },
       toSave(){
           this.$refs['envaluate_form'].validate((valid) => {
                     if (valid) {

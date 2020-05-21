@@ -38,7 +38,7 @@
      </div>
 
      <el-dialog :title="title" :visible.sync="product_visible">
-         {{form}}{{user}}
+         
             <el-form ref="product_form" :model="form" :rules="rules">
                 <el-form-item label="收件人" label-width="80px" prop="name">
                 <el-input v-model="form.name" autocomplete="off" />
