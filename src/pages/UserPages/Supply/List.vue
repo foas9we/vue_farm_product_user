@@ -4,7 +4,7 @@
     <div class="header">
         <!-- 栏目列表 -->
         <div class="category_list">
-            <el-dropdown v-for="c in categorys" @command="toFiltrate">
+            <el-dropdown v-for="c in categorys" @command="toFiltrate" >
                 <el-button type="text">
                     {{c.name}}<i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
@@ -17,23 +17,12 @@
         </div>
         <!-- 搜索框 -->
         <div class="search" >
-            <el-select 
-                v-model="value" 
-                multiple  
-                filterable="true"  
-                remote="true"  
-                reserve-keyword 
+            <el-select v-model="value" multiple  filterable="true" remote="true" reserve-keyword 
                 placeholder="请输入关键词" 
-                
                 :remote-method="searchFor"
-                :loading="loading"
                 
-                >
-                <el-option
-                v-for="item in options"
-                :key="item.id"
-                :label="item.title"
-                :value="item">
+            >
+                <el-option  v-for="item in options" :key="item.id" :label="item.title" :value="item">
                 </el-option>
             </el-select>
         </div>
@@ -57,8 +46,9 @@
                 <div class="product-not-found"
                     v-show="!products.length">暂无相关商品</div>
                 </div>
-            
-        </div>       
+               
+        </div>  
+             
     </div>
     
 </template>

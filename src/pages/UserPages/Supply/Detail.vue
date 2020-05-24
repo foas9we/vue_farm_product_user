@@ -117,6 +117,7 @@ export default {
       this.product = this.$route.query;
       this.loadEvaluate(this.$route.query.id);
       this.loadUser(this.name);
+      this.form.price = this.product.price;
       
     
    },

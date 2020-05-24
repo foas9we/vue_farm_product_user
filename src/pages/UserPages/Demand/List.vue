@@ -41,10 +41,10 @@
         <br/><br/>
         <!-- 农产品列表 -->
         <div class="product_list"> 
-            <!-- <div class="product" v-for="product in products" :key="product.id" v-if="product.state=='采购'"> -->
-                 
+            <!-- <div class="product" v-for="product in products" :key="product.id" v-if="product.state=='采购'">
+                  -->
                   <!-- 表格 -->
-                <el-table :data="products"  style="width: 100%" >
+                <el-table :data="products"  style="width: 100%"  filters>
                 <el-table-column  prop="id" label="编号" width="180"></el-table-column>
                 <el-table-column  prop="title" label="标题" width="180"></el-table-column>
                 <el-table-column  prop="category.name" label="所属栏目"> </el-table-column>
@@ -52,17 +52,7 @@
                 <el-table-column  prop="description" label="描述信息"> </el-table-column>
                 <el-table-column  prop="user.phone" label="联系方式"> </el-table-column>
                 <el-table-column  prop="user.address" label="地址"> </el-table-column>
-                <!-- <el-table-column
-                fixed="right"
-                label="操作"
-                align="center"
-                width="150">
-                <template slot-scope="scope">
-                    
-                    <el-button type="text" size="small" @click="toEdit(scope.row)">编辑</el-button>
-                    <el-button @click="toDelete(scope.row.id)" type="text" size="small">下架</el-button>
-                </template>
-                </el-table-column> -->
+                
                 </el-table>
             <!-- </div> -->
         </div>       
@@ -100,7 +90,7 @@ export default {
             })
        },
        toFiltrate(command){
-          request.get("/product/findByCategory?id="+command)
+          request.get("/product/findDemandByCategory?id="+command)
           .then(response=>{
             this.products = response.data;
         })

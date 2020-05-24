@@ -1,6 +1,15 @@
 <template>
     <div class="myname">
-       
+        <!-- <div class="Name">
+             <el-form ref="user_name" :model="form3" :rules="rules3">
+                 <el-form-item label="用户名" label-width="80px" prop="name">
+                    <el-input v-model="form3.name" autocomplete="off" />
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="UpdateName">修改</el-button>
+                </el-form-item>
+             </el-form>
+        </div> -->
         <div class="me">
                 <el-form ref="user_form" :model="form" :rules="rules">
                 <el-form-item label="用户名" label-width="80px" prop="name">
@@ -39,6 +48,7 @@
                 <el-table-column prop="id" label="编号" width="180"></el-table-column>
                 <!-- <el-table-column prop="state" label="订单状态" width="180"></el-table-column> -->
                 <el-table-column prop="date"  :formatter="dateFormat" label="下单时间"> </el-table-column>
+                <el-table-column prop="price" label="订单金额(元)"> </el-table-column>
                 <el-table-column prop="product.title" label="产品"> </el-table-column>
                 <!-- <el-table-column prop="user.name" label="下单人"> </el-table-column> -->
                 <el-table-column prop="name" label="收件人"> </el-table-column>
@@ -110,21 +120,24 @@ export default {
         return{
             form:{},
             rules: {
-                name: [
-                { required: true, message: '请输入用户名', trigger: 'change' }
-                ],
-                password: [
-                { required: true, message: '请输入密码', trigger: 'change' }
-                ],
-                gender: [
-                { required: true, message: '请选择性别', trigger: 'change' }
-                ]
+                
+                // password: [
+                // { required: true, message: '请输入密码', trigger: 'change' }
+                // ],
+                // gender: [
+                // { required: true, message: '请选择性别', trigger: 'change' }
+                // ]
             },
             rules2:{
                 content: [
                 { required: true, message: '评论信息', trigger: 'change' }
                 ]    
             },
+            // rules3:{
+            //     name: [
+            //     { required: true, message: '请输入用户名', trigger: 'change' }
+            //     ]    
+            // },
             order:[],
             evaluate_visible:false,
             title:'评论',
@@ -132,7 +145,11 @@ export default {
             imageUrl:'',
             pictureUrl:'',
             uploadUrl:'/fileupload/fileUpload',
-            myHeaders: {Authorization: getToken()}
+            myHeaders: {Authorization: getToken()},
+            // form3:{
+            //     id:'',
+            //     name:''
+            // },
         }
     },
     
@@ -149,6 +166,27 @@ export default {
       this.pictureUrl = process.env.VUE_APP_BASE_API;
   },
   methods:{
+      //修改用户名
+    //   UpdateName(){
+    //       request(
+    //             {
+    //                 method:"post",
+    //                 url:'/baseUser/saveOrUpdate',
+    //                 data:qs.stringify(this.form3),
+    //                 headers:{
+    //                     'Content-Type':'application/x-www-form-urlencoded'
+    //                 }
+    //             }
+    //         ).then(result=>{
+    //     this.$message({
+    //         message:result.message,
+    //         type:"success"
+    //     });
+    //     this.form.name = form3.name;
+    //     this.$router.go(0)
+    //   })
+    //   },
+
       handleAvatarSuccess(response, file,fileList) {
 	//res为后端返回的数据
         this.imageUrl = response.message
@@ -209,6 +247,8 @@ export default {
           request.get('/baseUser/findByName?name='+name)
             .then(response=>{
                 this.form = response.data;
+                this.form3.name = response.data.name;
+                this.form3.id = response.data.id;
             })
       },
       saveOrUpdate(){
@@ -226,7 +266,8 @@ export default {
             message:result.message,
             type:"success"
         });
-        this.back();
+        this.loadUser(this.name);
+        
       })
       },
       back(){
